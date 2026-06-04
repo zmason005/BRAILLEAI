@@ -3,43 +3,148 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Accessible Braille AI Terminal</title>
-    <link rel="stylesheet" href="css/style.css">
+    <title>Aura Terminal</title>
+    <style>
+        /* High-contrast, visual-noise-free terminal styling */
+        body {
+            background-color: #050505;
+            color: #00ff66;
+            font-family: 'Courier New', Courier, monospace;
+            margin: 0;
+            padding: 20px;
+            line-height: 1.5;
+        }
+        .sr-only {
+            position: absolute;
+            width: 1px;
+            height: 1px;
+            padding: 0;
+            margin: -1px;
+            overflow: hidden;
+            clip: rect(0, 0, 0, 0);
+            border: 0;
+        }
+        main {
+            max-width: 800px;
+            margin: 0 auto;
+        }
+        header h1 {
+            border-bottom: 2px solid #00ff66;
+            padding-bottom: 10px;
+            margin-top: 0;
+        }
+        nav {
+            background-color: #111;
+            padding: 15px;
+            border: 1px dashed #00ff66;
+            margin-bottom: 30px;
+        }
+        nav h2 {
+            margin-top: 0;
+            color: #00e1ff;
+        }
+        ol {
+            padding-left: 20px;
+            margin-bottom: 0;
+        }
+        li {
+            margin-bottom: 8px;
+        }
+        a {
+            color: #00e1ff;
+            text-decoration: none;
+        }
+        a:focus, a:hover {
+            text-decoration: underline;
+            outline: 2px solid #00ff66;
+        }
+        hr {
+            border: 0;
+            border-top: 1px double #00ff66;
+            margin: 30px 0;
+        }
+        article {
+            background-color: #0a0a0a;
+            border-left: 3px solid #00ff66;
+            padding: 10px 20px;
+            margin-bottom: 25px;
+        }
+        h5 {
+            color: #ff00ff;
+            margin: 0 0 10px 0;
+        }
+        h6 {
+            color: #00ff66;
+            margin: 0 0 10px 0;
+        }
+        p {
+            margin: 0 0 12px 0;
+            color: #ffffff;
+        }
+        p:last-child {
+            margin-bottom: 0;
+        }
+        .input-area {
+            margin-top: 40px;
+            border-top: 2px solid #00ff66;
+            padding-top: 20px;
+        }
+        label {
+            display: block;
+            margin-bottom: 10px;
+            font-weight: bold;
+        }
+        textarea {
+            width: 100%;
+            height: 100px;
+            background-color: #111;
+            color: #fff;
+            border: 1px solid #00ff66;
+            padding: 10px;
+            font-family: inherit;
+            box-sizing: border-box;
+            resize: vertical;
+        }
+        textarea:focus {
+            outline: 2px solid #00e1ff;
+        }
+    </style>
 </head>
 <body>
-    <header role="banner">
-        <h1>Accessible AI Terminal</h1>
-        <p>Optimized for refreshable Braille displays and screen reader structural navigation.</p>
-    </header>
 
-    <main id="main-content" role="main">
-        <section class="test-controls" aria-label="Simulation Testing Controls">
-            <h2>Prototype Testing Controls</h2>
-            <button id="btn-load-list">Simulate Complex List Response</button>
-            <button id="btn-load-table">Simulate Structured Table Response</button>
+    <main>
+        <header>
+            <h1 id="app-title">Aura AI Terminal</h1>
+        </header>
+
+        <nav aria-labelledby="index-heading">
+            <h2 id="index-heading">CONVERSATION INDEX</h2>
+            <ol id="glossary-list">
+                <li><a href="#prompt-1" id="link-prompt-1">Go to Exchange 1: Initial System Test</a></li>
+            </ol>
+        </nav>
+
+        <hr aria-hidden="true">
+
+        <section id="chat-log" role="log" aria-live="polite" aria-relevant="additions" aria-label="Chat History">
+            
+            <article id="exchange-1" aria-labelledby="prompt-1">
+                <h5 id="prompt-1">PROMPT 1</h5>
+                <p>Initial system check. Confirm DOM structural layout.</p>
+                
+                <h6 id="response-1">RESPONSE 1</h6>
+                <p>System operational. DOM framework configured with independent element structures to isolate text streams cleanly.</p>
+                <p>Ready to push changes to remote host.</p>
+            </article>
+
         </section>
 
-        <section class="chat-wrapper" aria-label="Chat Conversation History">
-            <div id="chat-log" role="log" aria-live="polite" aria-relevant="additions">
-                <div class="chat-message system-message">
-                    <p>Terminal ready. Type a message or use the simulation buttons above to test Braille row tracking.</p>
-                </div>
-            </div>
-        </section>
-
-        <section class="input-wrapper" aria-label="Message Input Area">
-            <form id="chat-form" novalidate>
-                <label for="user-input">Prompt Input (Press Enter to Send, Shift+Enter for new line):</label>
-                <textarea 
-                    id="user-input" 
-                    rows="3" 
-                    placeholder="Type your message here..."
-                    required></textarea>
-                <button type="submit" id="send-button">Send Prompt</button>
-            </form>
+        <section class="input-area" aria-label="Prompt Input">
+            <label id="input-label" for="user-prompt">Console Input (Press Enter to send, Shift+Enter for new line):</label>
+            <textarea id="user-prompt" aria-labelledby="input-label" autocomplete="off" spellcheck="false" placeholder="Type message here..."></textarea>
         </section>
     </main>
 
-    <script type="module" src="js/app.js"></script>
+    <script src="app.js"></script>
 </body>
 </html>
