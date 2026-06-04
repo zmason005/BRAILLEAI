@@ -11,27 +11,40 @@ document.addEventListener('DOMContentLoaded', () => {
     const userInput = document.getElementById('user-input');
     const chatLog = document.getElementById('chat-log');
     const glossaryList = document.getElementById('glossary-list');
+    const btnSubmit = document.getElementById('btn-submit');
     const btnList = document.getElementById('btn-load-list');
     const btnTable = document.getElementById('btn-load-table');
 
     // Keep state index running. Initial page loads with seed item 1.
     let interactionCounter = 1;
 
-    // Handle form submissions
+    // Handle form submissions safely without caching errors or freezing states
     chatForm.addEventListener('submit', async (e) => {
         e.preventDefault();
         const text = userInput.value.trim();
         if (!text) return;
 
-        userInput.value = '';
-        await processInteractionLoop('default', text);
+        try {
+            // Retain values in textarea until processInteractionLoop explicitly copies strings
+            await processInteractionLoop('default', text);
+            userInput.value = ''; // Clean box exclusively after processing completes safely
+        } catch (err) {
+            console.error("Runtime exception encountered inside submission framework:", err);
+            userInput.value = '';
+        }
     });
 
     // Capture standard terminal carriage entries while preserving multi-line options
     userInput.addEventListener('keydown', (e) => {
         if (e.key === 'Enter' && !e.shiftKey) {
-            e.preventDefault(); // Stop native newline behavior
-            chatForm.requestSubmit(); // Dispatch clean submission lifecycles
+            e.preventDefault(); // Stop native newline execution behavior
+            
+            // Explicitly execute click listener logic to route through form lifecycle handlers cleanly
+            if (btnSubmit) {
+                btnSubmit.click();
+            } else {
+                chatForm.dispatchEvent(new Event('submit'));
+            }
         }
     });
 
