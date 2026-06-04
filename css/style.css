@@ -1,0 +1,123 @@
+/* Base Styling Adjustments */
+body {
+    background-color: #0d1117;
+    color: #c9d1d9;
+    font-family: Courier, monospace; /* Clean spacing baseline */
+    margin: 0;
+    padding: 20px;
+    line-height: 1.5;
+}
+
+header, main, section {
+    display: block;
+    margin-bottom: 20px;
+}
+
+h1 {
+    color: #58a6ff;
+    font-size: 1.5rem;
+    margin-bottom: 5px;
+}
+
+h2 {
+    color: #f0883e;
+    font-size: 1.1rem;
+}
+
+/* Simulation Controls Styling */
+.test-controls button {
+    background-color: #21262d;
+    color: #c9d1d9;
+    border: 1px solid #30363d;
+    padding: 10px 15px;
+    margin-right: 10px;
+    margin-bottom: 10px;
+    cursor: pointer;
+    font-family: inherit;
+}
+
+.test-controls button:focus {
+    outline: 2px solid #58a6ff;
+}
+
+/* Chat Output Stream Viewport */
+.chat-wrapper {
+    border: 1px solid #30363d;
+    background-color: #161b22;
+    padding: 15px;
+    min-height: 300px;
+    max-height: 500px;
+    overflow-y: auto;
+}
+
+.chat-message {
+    margin-bottom: 20px;
+    border-bottom: 1px dashed #21262d;
+    padding-bottom: 10px;
+}
+
+.user-message {
+    color: #ff7b72;
+}
+
+.ai-message {
+    color: #79c0ff;
+}
+
+/* Perfect Navigable Table Semantics Rules */
+table {
+    border-collapse: collapse;
+    width: 100%;
+    margin: 15px 0;
+}
+
+th, td {
+    border: 1px solid #30363d;
+    padding: 8px 12px;
+    text-align: left;
+}
+
+th {
+    background-color: #21262d;
+    color: #58a6ff;
+}
+
+/* Lists layout stability */
+ul, ol {
+    margin: 10px 0;
+    padding-left: 25px;
+}
+
+li {
+    margin-bottom: 5px;
+}
+
+/* Textarea Input styling */
+textarea {
+    width: 100%;
+    background-color: #0d1117;
+    color: #c9d1d9;
+    border: 1px solid #30363d;
+    padding: 10px;
+    font-family: inherit;
+    box-sizing: border-box;
+    resize: vertical;
+}
+
+textarea:focus {
+    outline: 2px solid #58a6ff;
+}
+
+#send-button {
+    background-color: #238636;
+    color: #ffffff;
+    border: 1px solid #2ea44f;
+    padding: 10px 20px;
+    font-family: inherit;
+    cursor: pointer;
+    margin-top: 10px;
+}
+
+#send-button:focus {
+    outline: 2px solid #58a6ff;
+}
