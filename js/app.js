@@ -3,15 +3,19 @@
  * Application Orchestrator and User Input Event Lifecycle Controller.
  */
 
-import { parseMarkdownToNavigableHTML } from './parser.js';
+import { parseMarkdownToNavigableHTML, parseRawTextToParagraphs } from './parser.js';
 import { submitPromptToModel } from './transport.js';
 
 document.addEventListener('DOMContentLoaded', () => {
     const chatForm = document.getElementById('chat-form');
     const userInput = document.getElementById('user-input');
     const chatLog = document.getElementById('chat-log');
+    const glossaryList = document.getElementById('glossary-list');
     const btnList = document.getElementById('btn-load-list');
     const btnTable = document.getElementById('btn-load-table');
+
+    // Keep state index running. Initial page loads with seed item 1.
+    let interactionCounter = 1;
 
     // Handle form submissions
     chatForm.addEventListener('submit', async (e) => {
@@ -19,16 +23,8 @@ document.addEventListener('DOMContentLoaded', () => {
         const text = userInput.value.trim();
         if (!text) return;
 
-        appendMessageEntry('user', text);
         userInput.value = '';
-
-        // Execute processing tracking states
-        try {
-            const rawResponse = await submitPromptToModel('default', text);
-            appendMessageEntry('ai', rawResponse);
-        } catch (err) {
-            appendMessageEntry('system', 'Connection or streaming processing execution failed.');
-        }
+        await processInteractionLoop('default', text);
     });
 
     // Capture standard terminal carriage entries while preserving multi-line options
@@ -39,35 +35,64 @@ document.addEventListener('DOMContentLoaded', () => {
         }
     });
 
-    // Map verification helper controllers
+    // Verification helper triggers
     btnList.addEventListener('click', async () => {
-        appendMessageEntry('user', 'Execute List Simulation Output Pattern Request.');
-        const response = await submitPromptToModel('simulated-list', '');
-        appendMessageEntry('ai', response);
+        await processInteractionLoop('simulated-list', 'Execute List Simulation Output Pattern Request.');
     });
 
     btnTable.addEventListener('click', async () => {
-        appendMessageEntry('user', 'Execute Table Matrix Output Pattern Request.');
-        const response = await submitPromptToModel('simulated-table', '');
-        appendMessageEntry('ai', response);
+        await processInteractionLoop('simulated-table', 'Execute Table Matrix Output Pattern Request.');
     });
 
-    function appendMessageEntry(sender, rawText) {
-        const msgContainer = document.createElement('div');
-        msgContainer.classList.add('chat-message', `${sender}-message`);
+    /**
+     * Executes the strict Prompt + Response dual-article processing loop
+     */
+    async function processInteractionLoop(platform, userText) {
+        interactionCounter++;
+        const currentIdIndex = interactionCounter;
 
-        // Apply custom accessible structural parser logic to AI outputs
-        if (sender === 'ai') {
-            msgContainer.innerHTML = parseMarkdownToNavigableHTML(rawText);
-        } else {
-            const p = document.createElement('p');
-            p.textContent = rawText;
-            msgContainer.appendChild(p);
+        // 1. Generate and Append Prompt Article
+        const promptArticle = document.createElement('article');
+        promptArticle.className = 'prompt-article';
+        promptArticle.id = `prompt-target-${currentIdIndex}`;
+        
+        const promptHeading = `<h5 id="prompt-${currentIdIndex}">PROMPT ${currentIdIndex}</h5>`;
+        const promptContent = parseRawTextToParagraphs(userText);
+        promptArticle.innerHTML = promptHeading + promptContent;
+        chatLog.appendChild(promptArticle);
+
+        // 2. Append anchor listing to dynamic Conversation Index Glossary
+        const glossaryItem = document.createElement('li');
+        const glossaryLink = document.createElement('a');
+        glossaryLink.href = `#prompt-target-${currentIdIndex}`;
+        
+        // Extract plain snippet for clean Braille panning
+        const normalizedText = userText.replace(/\n+/g, ' ');
+        const textSnippet = normalizedText.length > 40 ? normalizedText.substring(0, 40) + '...' : normalizedText;
+        glossaryLink.textContent = `Go to Exchange ${currentIdIndex}: ${textSnippet}`;
+        
+        glossaryItem.appendChild(glossaryLink);
+        glossaryList.appendChild(glossaryItem);
+
+        // 3. Request background data generation
+        let responseHTML = '';
+        try {
+            const rawResponse = await submitPromptToModel(platform, userText);
+            responseHTML = parseMarkdownToNavigableHTML(rawResponse);
+        } catch (err) {
+            responseHTML = '<p>Connection or streaming processing execution failed.</p>';
         }
 
-        chatLog.appendChild(msgContainer);
+        // 4. Generate and Append Response Article
+        const responseArticle = document.createElement('article');
+        responseArticle.className = 'response-article';
+        responseArticle.id = `response-target-${currentIdIndex}`;
         
-        // Ensure standard scrolling view updates alongside text additions
-        chatLog.scrollTop = chatLog.scrollHeight;
+        const responseHeading = `<h6 id="response-${currentIdIndex}">RESPONSE ${currentIdIndex}</h6>`;
+        responseArticle.innerHTML = responseHeading + responseHTML;
+        chatLog.appendChild(responseArticle);
+        
+        // Safe linear scroll updates
+        window.scrollTo(0, document.body.scrollHeight);
     }
 });
