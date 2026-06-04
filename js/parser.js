@@ -3,10 +3,25 @@
  * The HTML Engine. Converts raw text chunks into strict semantic structures.
  */
 
+/**
+ * Parses user multiline plain text inputs into individual standalone paragraphs.
+ * Completely replaces <br> behaviors with strict <p> block tags.
+ */
+export function parseRawTextToParagraphs(text) {
+    if (!text) return '';
+    return text
+        .split(/\n+/)
+        .map(line => line.trim())
+        .filter(line => line.length > 0)
+        .map(line => `<p>${line}</p>`)
+        .join('');
+}
+
+/**
+ * Handles raw responses containing structures like tables and lists
+ */
 export function parseMarkdownToNavigableHTML(text) {
     const container = document.createElement('div');
-    
-    // Normalize line endings and segment text block by block
     const blocks = text.split(/\n\n+/);
     
     blocks.forEach(block => {
@@ -25,10 +40,16 @@ export function parseMarkdownToNavigableHTML(text) {
         }
         // 3. Fallback standard reading paragraphs
         else {
-            const p = document.createElement('p');
-            // Maintain layout clean breaks inside raw paragraph texts
-            p.innerHTML = trimmedBlock.replace(/\n/g, '<br>');
-            container.appendChild(p);
+            // Split inner blocks by any remaining sub-newlines to force true paragraph isolation
+            const subLines = trimmedBlock.split(/\n+/);
+            subLines.forEach(line => {
+                const cleanLine = line.trim();
+                if (cleanLine) {
+                    const p = document.createElement('p');
+                    p.textContent = cleanLine;
+                    container.appendChild(p);
+                }
+            });
         }
     });
 
@@ -45,22 +66,21 @@ function buildSemanticTable(markdownText) {
     const thead = document.createElement('thead');
     const headerRow = document.createElement('tr');
     const rawHeaders = lines[0].split('|').map(h => h.trim()).filter((h, index, arr) => {
-        // Discard edge splits from markdown format boundaries
         return index > 0 && index < arr.length - 1;
     });
 
     rawHeaders.forEach(headerText => {
         const th = document.createElement('th');
-        th.setAttribute('scope', 'col'); // Tells VoiceOver explicitly it is a column rule
+        th.setAttribute('scope', 'col'); // Explicitly anchors column rules for screen readers
         th.textContent = headerText;
         headerRow.appendChild(th);
     });
     thead.appendChild(headerRow);
     table.appendChild(thead);
 
-    // Process Table Body (Skip index 0 header and index 1 separator strings |---|)
+    // Process Table Body
     const tbody = document.createElement('tbody');
-    const dataLines = lines.slice(2);
+    const dataLines = lines.slice(2); // Skips header row and divider line
 
     dataLines.forEach(line => {
         const tr = document.createElement('tr');
@@ -85,7 +105,6 @@ function buildSemanticList(markdownText) {
     const lines = markdownText.split('\n').map(l => l.trim()).filter(l => l);
 
     lines.forEach(line => {
-        // Strip markdown list character flags safely
         const cleanContent = line.replace(/^[-*]\s+/, '');
         const li = document.createElement('li');
         li.textContent = cleanContent;
