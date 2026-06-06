@@ -1,5 +1,5 @@
 /**
- * js/parser.js
+ * parser.js
  * The HTML Engine. Converts raw text chunks into strict semantic structures.
  */
 
@@ -33,7 +33,7 @@ export function parseMarkdownToNavigableHTML(text) {
             const tableElement = buildSemanticTable(trimmedBlock);
             container.appendChild(tableElement);
         }
-        // 2. Process Bulleted Lists
+        // 2. Process Bulleted Lists (Handles mixed Markdown asterisks or hyphens)
         else if (trimmedBlock.startsWith('- ') || trimmedBlock.startsWith('* ')) {
             const listElement = buildSemanticList(trimmedBlock);
             container.appendChild(listElement);
@@ -90,7 +90,10 @@ function buildSemanticTable(markdownText) {
 
         rawCells.forEach(cellText => {
             const td = document.createElement('td');
-            td.textContent = cellText;
+            const trimmed = cellText.trim();
+            // Injects text or a explicit non-breaking space fallback 
+            // to shield cell structural layout calculation failures on refreshable displays
+            td.textContent = trimmed === '' ? '\u00A0' : trimmed;
             tr.appendChild(td);
         });
         tbody.appendChild(tr);
