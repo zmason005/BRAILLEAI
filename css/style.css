@@ -1,103 +1,154 @@
-/* Base Styling Adjustments */
+/* style.css */
+/* High-contrast, visual-noise-free terminal styling mapped to native semantic markup */
 body {
-    background-color: #0d1117;
-    color: #c9d1d9;
-    font-family: Courier, monospace; /* Clean spacing baseline */
+    background-color: #050505;
+    color: #00ff66;
+    font-family: 'Courier New', Courier, monospace;
     margin: 0;
     padding: 20px;
     line-height: 1.5;
 }
 
-header, main, section {
-    display: block;
-    margin-bottom: 20px;
+.sr-only {
+    position: absolute;
+    width: 1px;
+    height: 1px;
+    padding: 0;
+    margin: -1px;
+    overflow: hidden;
+    clip: rect(0, 0, 0, 0);
+    border: 0;
 }
 
-h1 {
-    color: #58a6ff;
-    font-size: 1.5rem;
-    margin-bottom: 5px;
+main {
+    max-width: 800px;
+    margin: 0 auto;
 }
 
-h2 {
-    color: #f0883e;
+header h1 {
+    border-bottom: 2px solid #00ff66;
+    padding-bottom: 10px;
+    margin-top: 0;
+}
+
+nav {
+    background-color: #111;
+    padding: 15px;
+    border: 1px dashed #00ff66;
+    margin-bottom: 30px;
+}
+
+nav h2 {
+    margin-top: 0;
+    color: #00e1ff;
+}
+
+ol {
+    padding-left: 20px;
+    margin-bottom: 0;
+}
+
+li {
+    margin-bottom: 8px;
+}
+
+a {
+    color: #00e1ff;
+    text-decoration: none;
+}
+
+a:focus, a:hover {
+    text-decoration: underline;
+    outline: 2px solid #00ff66;
+}
+
+#chat-log {
+    border: 1px solid #30363d;
+    background-color: #0a0a0a;
+    padding: 15px;
+    margin-bottom: 25px;
+}
+
+article {
+    border-left: 3px solid #00ff66;
+    padding: 10px 20px;
+    margin-bottom: 25px;
+}
+
+article.prompt-article {
+    border-left-color: #00e1ff;
+}
+
+article.response-article {
+    border-left-color: #ff00ff;
+}
+
+/* Explicit heading maps matching your level-5 and level-6 rules */
+article h5 {
+    color: #00e1ff;
+    margin: 0 0 10px 0;
     font-size: 1.1rem;
 }
 
-/* Simulation Controls Styling */
-.test-controls button {
-    background-color: #21262d;
-    color: #c9d1d9;
-    border: 1px solid #30363d;
-    padding: 10px 15px;
-    margin-right: 10px;
-    margin-bottom: 10px;
-    cursor: pointer;
-    font-family: inherit;
+article h6 {
+    color: #ff00ff;
+    margin: 0 0 10px 0;
+    font-size: 1rem;
 }
 
-.test-controls button:focus {
-    outline: 2px solid #58a6ff;
+p {
+    margin: 0 0 12px 0;
+    color: #ffffff;
 }
 
-/* Chat Output Stream Viewport */
-.chat-wrapper {
-    border: 1px solid #30363d;
-    background-color: #161b22;
-    padding: 15px;
-    min-height: 300px;
-    max-height: 500px;
-    overflow-y: auto;
-}
-
-.chat-message {
-    margin-bottom: 20px;
-    border-bottom: 1px dashed #21262d;
-    padding-bottom: 10px;
-}
-
-.user-message {
-    color: #ff7b72;
-}
-
-.ai-message {
-    color: #79c0ff;
+p:last-child {
+    margin-bottom: 0;
 }
 
 /* Perfect Navigable Table Semantics Rules */
 table {
-    border-collapse: collapse;
     width: 100%;
+    border-collapse: collapse;
     margin: 15px 0;
+    color: #ffffff;
 }
 
 th, td {
-    border: 1px solid #30363d;
-    padding: 8px 12px;
+    border: 1px solid #00ff66;
+    padding: 8px;
     text-align: left;
 }
 
 th {
-    background-color: #21262d;
-    color: #58a6ff;
+    background-color: #111;
+    color: #00e1ff;
 }
 
-/* Lists layout stability */
-ul, ol {
+ul {
+    padding-left: 20px;
     margin: 10px 0;
-    padding-left: 25px;
+    color: #ffffff;
 }
 
-li {
-    margin-bottom: 5px;
+/* Terminal Input dock styling rules */
+.input-area {
+    margin-top: 40px;
+    border-top: 2px solid #00ff66;
+    padding-top: 20px;
 }
 
-/* Textarea Input styling */
+label {
+    display: block;
+    margin-bottom: 10px;
+    font-weight: bold;
+}
+
 textarea {
     width: 100%;
-    background-color: #0d1117;
-    color: #c9d1d9;
-    border: 1px solid #30363d;
+    height: 100px;
+    background-color: #111;
+    color: #fff;
+    border: 1px solid #00ff66;
     padding: 10px;
     font-family: inherit;
     box-sizing: border-box;
@@ -105,19 +156,27 @@ textarea {
 }
 
 textarea:focus {
-    outline: 2px solid #58a6ff;
+    outline: 2px solid #00e1ff;
 }
 
-#send-button {
-    background-color: #238636;
-    color: #ffffff;
-    border: 1px solid #2ea44f;
-    padding: 10px 20px;
+.action-row {
+    margin-top: 10px;
+    display: flex;
+    gap: 15px;
+    flex-wrap: wrap;
+}
+
+button {
+    background-color: #111;
+    border: 1px solid #00ff66;
+    color: #00ff66;
+    padding: 8px 16px;
     font-family: inherit;
     cursor: pointer;
-    margin-top: 10px;
 }
 
-#send-button:focus {
-    outline: 2px solid #58a6ff;
+button:focus, button:hover {
+    background-color: #00ff66;
+    color: #000;
+    outline: 2px solid #00e1ff;
 }
