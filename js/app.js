@@ -1,6 +1,7 @@
 /**
  * app.js
  * Application Orchestrator and User Input Event Lifecycle Controller.
+ * Dynamically updates the live aria-log region with clean semantic markup.
  */
 
 import { parseMarkdownToNavigableHTML, parseRawTextToParagraphs } from './parser.js';
@@ -22,13 +23,19 @@ document.addEventListener('DOMContentLoaded', () => {
     chatForm.addEventListener('submit', async (e) => {
         e.preventDefault();
         const text = userInput.value.trim();
+        
+        // Block empty submissions to prevent empty DOM mutations
         if (!text) return;
 
         try {
-            // Retain values in textarea until processInteractionLoop explicitly copies strings
+            // Run the dynamic update loop using the default platform transport logic
             await processInteractionLoop('default', text);
-            userInput.value = ''; // Clean box exclusively after processing completes safely
-            userInput.focus(); // Retain user focus for immediate continuation via Braille routing keys
+            
+            // Clean box exclusively after processing completes safely to protect text buffering
+            userInput.value = ''; 
+            
+            // Retain user focus for immediate continuation via Braille routing keys
+            userInput.focus(); 
         } catch (err) {
             console.error("Runtime exception encountered inside submission framework:", err);
             userInput.value = '';
@@ -50,7 +57,7 @@ document.addEventListener('DOMContentLoaded', () => {
         }
     });
 
-    // Verification helper triggers
+    // Verification helper triggers for simulating specialized structures
     btnList.addEventListener('click', async () => {
         await processInteractionLoop('simulated-list', 'Execute List Simulation Output Pattern Request.');
     });
@@ -61,28 +68,40 @@ document.addEventListener('DOMContentLoaded', () => {
 
     /**
      * Executes the strict Prompt + Response dual-article processing loop
+     * Dynamically appends semantic text nodes to the live conversation log
      */
     async function processInteractionLoop(platform, userText) {
+        // Increment tracking pointer to keep heading milestones strictly linear
         interactionCounter++;
         const currentIdIndex = interactionCounter;
 
-        // 1. Generate and Append Prompt Article
+        // ==========================================
+        // STEP 1: ASSEMBLE AND APPEND USER PROMPT
+        // ==========================================
         const promptArticle = document.createElement('article');
         promptArticle.className = 'prompt-article';
         promptArticle.id = `prompt-target-${currentIdIndex}`;
         
         // Enforced strict level-5 heading for prompt sections per architectural adjustments
         const promptHeading = `<h5 id="prompt-${currentIdIndex}">PROMPT ${currentIdIndex}</h5>`;
+        
+        // Transform multiline raw inputs into true isolated paragraph structures
         const promptContent = parseRawTextToParagraphs(userText);
+        
+        // Safely map code fragments to innerHTML inside the detached element
         promptArticle.innerHTML = promptHeading + promptContent;
+        
+        // Inject block into the live aria log framework
         chatLog.appendChild(promptArticle);
 
-        // 2. Append anchor listing to dynamic Conversation Index Glossary
+        // ==========================================
+        // STEP 2: CONSTRUCT INSTANT GLOSSARY ROUTING
+        // ==========================================
         const glossaryItem = document.createElement('li');
         const glossaryLink = document.createElement('a');
         glossaryLink.href = `#prompt-target-${currentIdIndex}`;
         
-        // Extract plain snippet for clean Braille panning
+        // Normalize line breaks for clean screen reader speech and Braille display line pacing
         const normalizedText = userText.replace(/\n+/g, ' ');
         const textSnippet = normalizedText.length > 40 ? normalizedText.substring(0, 40) + '...' : normalizedText;
         glossaryLink.textContent = `Go to Exchange ${currentIdIndex}: ${textSnippet}`;
@@ -90,26 +109,36 @@ document.addEventListener('DOMContentLoaded', () => {
         glossaryItem.appendChild(glossaryLink);
         glossaryList.appendChild(glossaryItem);
 
-        // 3. Request background data generation
+        // ==========================================
+        // STEP 3: ASYNC FETCH & RESPONSE RENDERING
+        // ==========================================
         let responseHTML = '';
         try {
+            // Handshake payload over mock transport module
             const rawResponse = await submitPromptToModel(platform, userText);
+            // Map raw text streams into completely clean HTML matrices
             responseHTML = parseMarkdownToNavigableHTML(rawResponse);
         } catch (err) {
             responseHTML = '<p>Connection or streaming processing execution failed.</p>';
         }
 
-        // 4. Generate and Append Response Article
+        // ==========================================
+        // STEP 4: ASSEMBLE AND APPEND AI RESPONSE
+        // ==========================================
         const responseArticle = document.createElement('article');
         responseArticle.className = 'response-article';
         responseArticle.id = `response-target-${currentIdIndex}`;
         
         // Maintained level-6 heading structure for response blocks
         const responseHeading = `<h6 id="response-${currentIdIndex}">RESPONSE ${currentIdIndex}</h6>`;
+        
+        // Incorporate response fragment text securely
         responseArticle.innerHTML = responseHeading + responseHTML;
+        
+        // Push full response structure block to user viewport log
         chatLog.appendChild(responseArticle);
         
-        // Safe linear scroll updates
+        // Smoothly adjust tracking viewport window position
         window.scrollTo(0, document.body.scrollHeight);
     }
 });
