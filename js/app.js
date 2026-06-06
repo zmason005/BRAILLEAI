@@ -1,5 +1,5 @@
 /**
- * js/app.js
+ * app.js
  * Application Orchestrator and User Input Event Lifecycle Controller.
  */
 
@@ -28,6 +28,7 @@ document.addEventListener('DOMContentLoaded', () => {
             // Retain values in textarea until processInteractionLoop explicitly copies strings
             await processInteractionLoop('default', text);
             userInput.value = ''; // Clean box exclusively after processing completes safely
+            userInput.focus(); // Retain user focus for immediate continuation via Braille routing keys
         } catch (err) {
             console.error("Runtime exception encountered inside submission framework:", err);
             userInput.value = '';
@@ -38,6 +39,7 @@ document.addEventListener('DOMContentLoaded', () => {
     userInput.addEventListener('keydown', (e) => {
         if (e.key === 'Enter' && !e.shiftKey) {
             e.preventDefault(); // Stop native newline execution behavior
+            e.stopPropagation(); // Stop event bubbling propagation loops entirely
             
             // Explicitly execute click listener logic to route through form lifecycle handlers cleanly
             if (btnSubmit) {
@@ -69,6 +71,7 @@ document.addEventListener('DOMContentLoaded', () => {
         promptArticle.className = 'prompt-article';
         promptArticle.id = `prompt-target-${currentIdIndex}`;
         
+        // Enforced strict level-5 heading for prompt sections per architectural adjustments
         const promptHeading = `<h5 id="prompt-${currentIdIndex}">PROMPT ${currentIdIndex}</h5>`;
         const promptContent = parseRawTextToParagraphs(userText);
         promptArticle.innerHTML = promptHeading + promptContent;
@@ -101,6 +104,7 @@ document.addEventListener('DOMContentLoaded', () => {
         responseArticle.className = 'response-article';
         responseArticle.id = `response-target-${currentIdIndex}`;
         
+        // Maintained level-6 heading structure for response blocks
         const responseHeading = `<h6 id="response-${currentIdIndex}">RESPONSE ${currentIdIndex}</h6>`;
         responseArticle.innerHTML = responseHeading + responseHTML;
         chatLog.appendChild(responseArticle);
