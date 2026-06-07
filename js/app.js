@@ -4,6 +4,7 @@
  * Dynamically updates the live aria-log region with clean semantic markup.
  */
 
+// Relative imports optimized to find peer files inside the same js subfolder
 import { parseMarkdownToNavigableHTML, parseRawTextToParagraphs } from './parser.js';
 import { submitPromptToModel } from './transport.js';
 
